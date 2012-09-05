@@ -1,0 +1,44 @@
+<?php
+
+/*
+ *
+ */
+
+
+/**
+ * function ldh_cont
+ */
+function ldh_container() {
+  $out['#type'] = 'container';
+}
+
+/**
+ * array for html tag
+ */
+function ldh_tagar($val, $tag = 'div') {
+  $out = array();
+  $out['#tag'] = $tag;
+  $out['#type'] = 'html_tag';
+  $out['#value'] = $val;
+  return $out;
+}
+
+/**
+ * function ldh_addclass
+ */
+function ldh_addclass(&$ar, $cl) {
+  // check if the attributes are present
+  // check if its an array
+  // check if it contains classes ()
+  // check if the parameter is an array
+  $ar['#attributes']['class'][] = $cl;
+
+}
+
+function ldh_setid(&$ar, $id) {
+  $ar['#attributes']['id'] = $id;
+}
+
+function ldh_setstyle(&$ar, $st) {
+  $ar['#attributes']['style'] = $st;
+}
