@@ -42,3 +42,43 @@ function ldh_setid(&$ar, $id) {
 function ldh_setstyle(&$ar, $st) {
   $ar['#attributes']['style'] = $st;
 }
+
+function ldh_efq($bundle, $entityType = 'node'){
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', $entityType)
+    ->entityCondition('bundle', $bundle);
+  return $query;
+}
+
+function ldh_pi($bundle, $entityType = 'node') {
+  $ent = entity_create($entityType, array('type' => $bundle));
+  $nw = entity_metadata_wrapper($entityType, $ent);
+  $pinfo = $nw->getPropertyInfo();
+  return $pinfo;
+}
+
+function ldh_taxo_addp($term, $vocname, $parent) {
+
+}
+
+function ldh_taxo_add($term, $vocname, $parentid = 0) {
+  // find vid
+  $voc = taxonomy_vocabulary_machine_name_load($vocname);
+  // create array
+  // return tid
+  $t = array(
+    'vid' => $voc->vid,
+    'name' => $term,
+  );
+  if ($parentid) {
+    $t['parent'] = $parentid;
+  }
+  $term = (object) $t;
+  taxonomy_term_save($term);
+  return $term->tid;
+}
+
+function ldh_nw($id) {
+  $node = node_load($id);
+  return entity_metadata_wrapper('node',$node);
+}
