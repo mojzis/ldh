@@ -43,6 +43,12 @@ function ldh_setstyle(&$ar, $st) {
   $ar['#attributes']['style'] = $st;
 }
 
+/**
+ * EntityFieldQuery
+ *
+ * @param string $bundle
+ *
+ */
 function ldh_efq($bundle, $entityType = 'node'){
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', $entityType)
@@ -97,4 +103,18 @@ function ldh_create($bundle, $entityType = 'node') {
   $ent = entity_create($entityType, array('type' => $bundle));
   $ew = entity_metadata_wrapper($entityType, $ent);
   return $ew;
+}
+
+function ldh_mach_to_tid($mach, $voc, $field ) {
+  // find automagically the field ?
+  // cache the resulst ? or even the whole list ?
+  $type = 'taxonomy_term';
+  $q = ldh_efq($voc,$type);
+  // find the column name, too :)
+  $r = $q->fieldCondition($field, 'value', $mach)
+    ->execute();
+  if (isset($r[$type])) {
+    return(end(array_keys($r[$type])));
+  }
+
 }
