@@ -78,7 +78,23 @@ function ldh_taxo_add($term, $vocname, $parentid = 0) {
   return $term->tid;
 }
 
+/**
+ * node wrapper
+ *
+ * @param integer $id
+ * nid of the node to load
+ *
+ * @return EntityMetadataWrapper
+ * http://drupalcontrib.org/api/drupal/contributions%21entity%21includes%21entity.wrapper.inc/class/EntityMetadataWrapper/7
+ */
 function ldh_nw($id) {
   $node = node_load($id);
   return entity_metadata_wrapper('node',$node);
+}
+
+
+function ldh_create($bundle, $entityType = 'node') {
+  $ent = entity_create($entityType, array('type' => $bundle));
+  $ew = entity_metadata_wrapper($entityType, $ent);
+  return $ew;
 }
