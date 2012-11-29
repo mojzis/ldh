@@ -67,6 +67,13 @@ function ldh_taxo_addp($term, $vocname, $parent) {
 
 }
 
+/**
+ * add a taxonomy term
+ * @param string $term
+ *   the title of the term to add
+ * @param string $vocname
+ *   the machine name of the vocabulary
+ */
 function ldh_taxo_add($term, $vocname, $parentid = 0) {
   // find vid
   $voc = taxonomy_vocabulary_machine_name_load($vocname);
@@ -117,4 +124,58 @@ function ldh_mach_to_tid($mach, $voc, $field ) {
     return(end(array_keys($r[$type])));
   }
 
+}
+
+/**
+ * $akce = 19;
+ * $r = ldh_efq('ucast','ucast')->fieldCondition('field_uc_akce', 'target_id', $akce)
+    ->execute();
+   dpm($r);
+ * $l = new LdhEfr('ucast','ucast');
+ * $l->fieldCo('field_uc_akce',$akce,'=','target_id');
+ * dpm($l->getResult());
+ * dpm($l->getAllIDs());
+ * dpm($l->getOneID());
+ */
+class LdhEfr{
+  var $efq;
+  var $result;
+  public $type; // should be protected ?
+  public $bundle;
+  
+  function __construct($bundle,$type = null) {
+    $this->efq = new EntityFieldQuery();
+    // if type null, try to find it, otherwise throw an exceptional exception
+    if (empty($type)) {
+      $type = 'node';
+    }
+    $this->type = $type;
+    $this->bundle = $bundle;
+    $this->efq->entityCondition('entity_type', $this->type)
+    ->entityCondition('bundle', $this->bundle);
+  }
+  
+  public function fieldCo($fieldname, $val, $op = null, $colname = null) {
+    // find the column name for us 'column name to be determined from metadata'
+    if(empty($op))
+      $op = "=";
+    $this->efq->fieldCondition($fieldname, $colname , $val, $op);
+  }
+  
+  public function getResult() {
+    $this->result = $this->efq->execute();
+    if ($this->result[$this->type]) {
+      return $this->result[$this->type];
+    } else {
+      return false;
+    }
+  }
+  
+  public function getAllIDs() {
+    return array_keys($this->getResult());
+  }
+  
+  public function getOneID() {
+    return end($this->getAllIDs());
+  }
 }
