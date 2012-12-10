@@ -1,8 +1,40 @@
 <?php
-
 /*
  *
  */
+
+function ldh_form_devel_execute_form_alter(&$form, &$form_alter) {
+
+  $form['ldhinfo'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'LDH info',
+    '#collapsible' => true,
+    // todo: remember the last setting
+    '#collapsed' => true,
+    '#weight' => -1,
+    '#attributes' => array('class' => array('ldh-functions')),
+    );
+  // todo : add javascript to enter the clicked function into the textarea
+  // try to load this somehow automagically ?
+  $functions = array(
+    'ldh_pi($bundle, $entityType = "node");',
+    'ldh_efq($bundle, $entityType = "node");',
+    'ldh_nw($id);',
+  );
+  $form['ldhinfo']['functions'] = array(
+    '#markup' =>  join("   \n",array_map(
+      function ($el) {
+        return '<span>'.$el.'</span>';
+      },
+      $functions
+      )),
+    );
+  $form['#attached']['js'] = array(
+    drupal_get_path('module', 'ldh') . '/js/ldh_devel.js',
+  );
+
+  dpm($form);
+}
 
 
 /**
@@ -105,6 +137,12 @@ function ldh_nw($id) {
   return entity_metadata_wrapper('node',$node);
 }
 
+function ldh_ew($id, $type) {
+  $e = end(entity_load($type, array($id)));
+  return entity_metadata_wrapper($type,$e);
+}
+
+
 
 function ldh_create($bundle, $entityType = 'node') {
   $ent = entity_create($entityType, array('type' => $bundle));
@@ -129,8 +167,8 @@ function ldh_mach_to_tid($mach, $voc, $field ) {
 /**
  * $akce = 19;
  * $r = ldh_efq('ucast','ucast')->fieldCondition('field_uc_akce', 'target_id', $akce)
-    ->execute();
-   dpm($r);
+ *   ->execute();
+ * dpm($r);
  * $l = new LdhEfr('ucast','ucast');
  * $l->fieldCo('field_uc_akce',$akce,'=','target_id');
  * dpm($l->getResult());
@@ -142,7 +180,7 @@ class LdhEfr{
   var $result;
   public $type; // should be protected ?
   public $bundle;
-  
+
   function __construct($bundle,$type = null) {
     $this->efq = new EntityFieldQuery();
     // if type null, try to find it, otherwise throw an exceptional exception
@@ -154,14 +192,14 @@ class LdhEfr{
     $this->efq->entityCondition('entity_type', $this->type)
     ->entityCondition('bundle', $this->bundle);
   }
-  
+
   public function fieldCo($fieldname, $val, $op = null, $colname = null) {
     // find the column name for us 'column name to be determined from metadata'
     if(empty($op))
       $op = "=";
     $this->efq->fieldCondition($fieldname, $colname , $val, $op);
   }
-  
+
   public function getResult() {
     $this->result = $this->efq->execute();
     if ($this->result[$this->type]) {
@@ -170,12 +208,16 @@ class LdhEfr{
       return false;
     }
   }
-  
+
   public function getAllIDs() {
     return array_keys($this->getResult());
   }
-  
+
   public function getOneID() {
     return end($this->getAllIDs());
+  }
+
+  public function getOneWr() {
+    return ldh_ew($this->getOneID(),$this->type);
   }
 }
