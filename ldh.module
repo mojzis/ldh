@@ -3,6 +3,24 @@
  *
  */
 
+/**
+ * hook_menu
+ */
+function ldh_menu() {
+  // TODO: make it more secure ... token ?
+  $items['fields_json'] = array(
+    'title' => 'Fields json',
+    'page callback' => 'ldh_fields_json',
+    'access callback' => true,
+    'type' => MENU_CALLBACK,
+    'file' => 'ldh.json.inc'
+  );
+  return $items;
+}
+
+/**
+ * hook_form_ID_alter
+ */
 function ldh_form_devel_execute_form_alter(&$form, &$form_alter) {
 
   $form['ldhinfo'] = array(
@@ -17,14 +35,23 @@ function ldh_form_devel_execute_form_alter(&$form, &$form_alter) {
   // todo : add javascript to enter the clicked function into the textarea
   // try to load this somehow automagically ?
   $functions = array(
-    'ldh_pi($bundle, $entityType = "node");',
-    'ldh_efq($bundle, $entityType = "node");',
-    'ldh_nw($id);',
+    'ldh_pi' => array(
+      'call' => 'ldh_pi($bundle, $entityType = "node");',
+      'title' => 'Property information',
+    ),
+    'ldh_efq' => array(
+      'call' => 'ldh_efq($bundle, $entityType = "node");',
+      'title' => 'Entity field query'
+    ),
+    'ldh_nw' => array(
+      'call' => 'ldh_nw($id);',
+      'title' => 'Node wrapper',
+    )
   );
   $form['ldhinfo']['functions'] = array(
     '#markup' =>  join("   \n",array_map(
       function ($el) {
-        return '<span>'.$el.'</span>';
+        return '<a href="#" title="'. $el['title'] .'">'.$el['call'].'</a>';
       },
       $functions
       )),
@@ -33,7 +60,7 @@ function ldh_form_devel_execute_form_alter(&$form, &$form_alter) {
     drupal_get_path('module', 'ldh') . '/js/ldh_devel.js',
   );
 
-  dpm($form);
+  //dpm($form);
 }
 
 
@@ -88,6 +115,12 @@ function ldh_efq($bundle, $entityType = 'node'){
   return $query;
 }
 
+/**
+ * PropertyInfo
+ * @todo
+ * - combine with info from field_info_fields
+ *   - especially ['FIELD_NAME']['field_name']
+ */
 function ldh_pi($bundle, $entityType = 'node') {
   $ent = entity_create($entityType, array('type' => $bundle));
   $nw = entity_metadata_wrapper($entityType, $ent);
