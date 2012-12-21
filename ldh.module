@@ -207,6 +207,9 @@ function ldh_mach_to_tid($mach, $voc, $field ) {
  * dpm($l->getResult());
  * dpm($l->getAllIDs());
  * dpm($l->getOneID());
+ *
+ * @todo make sure execute() is only ran once - record it somewhere
+ * @todo think about a "no results behaviour" - now its only false
  */
 class LdhEfr{
   var $efq;
@@ -235,7 +238,7 @@ class LdhEfr{
 
   public function getResult() {
     $this->result = $this->efq->execute();
-    if ($this->result[$this->type]) {
+    if ( $this->result && isset($this->result[$this->type]) && $this->result[$this->type]) {
       return $this->result[$this->type];
     } else {
       return false;
@@ -243,14 +246,40 @@ class LdhEfr{
   }
 
   public function getAllIDs() {
-    return array_keys($this->getResult());
+    $result = $this->getResult();
+    if ($result) {
+      return array_keys($result);
+    } else {
+      return false;
+    }
+  }
+
+  public function getEntities() {
+    $ids = $this->getAllIDs();
+    if ($ids) {
+      return entity_load($this->type, $ids);
+    } else {
+      return false;
+    }
+
   }
 
   public function getOneID() {
-    return end($this->getAllIDs());
+    $ids = $this->getAllIDs();
+    if ($ids) {
+      return end($ids);
+    } else {
+      return false;
+    }
+
   }
 
   public function getOneWr() {
-    return ldh_ew($this->getOneID(),$this->type);
+    $id = $this->getOneID();
+    if ($id) {
+      return ldh_ew($id, $this->type);
+    } else {
+      return false;
+    }
   }
 }
