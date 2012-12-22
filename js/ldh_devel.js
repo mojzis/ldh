@@ -1,6 +1,6 @@
 Drupal.behaviors.ldh = {
   attach: function (context, settings) {
-    jQuery('.ldh-functions span', context).click( function(event) { FcInsert(event); });
+    jQuery('.ldh-functions>div>a', context).click( function(event) { FcInsert(event); });
   }
 };
 
