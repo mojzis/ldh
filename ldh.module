@@ -120,12 +120,18 @@ function ldh_efq($bundle, $entityType = 'node'){
  * @todo
  * - combine with info from field_info_fields
  *   - especially ['FIELD_NAME']['field_name']
+ * - deal with types that dont have bundle keys (ie user)
  */
 function ldh_pi($bundle, $entityType = 'node') {
-  $ent = entity_create($entityType, array('type' => $bundle));
-  $nw = entity_metadata_wrapper($entityType, $ent);
-  $pinfo = $nw->getPropertyInfo();
-  return $pinfo;
+  $ei = entity_get_info($entityType);
+  if (isset($ei['entity keys']['bundle']) && $ei['entity keys']['bundle']) {
+    $bunkey = $ei['entity keys']['bundle'];
+    $ent = entity_create($entityType, array($bunkey => $bundle));
+    $nw = entity_metadata_wrapper($entityType, $ent);
+    $pinfo = $nw->getPropertyInfo();
+    return $pinfo;
+
+  }
 }
 
 function ldh_taxo_addp($term, $vocname, $parent) {
@@ -194,7 +200,22 @@ function ldh_mach_to_tid($mach, $voc, $field ) {
   if (isset($r[$type])) {
     return(end(array_keys($r[$type])));
   }
+}
 
+function ldh_load_one($type, $id) {
+  $ents = entity_load($type,array($id));
+  return end($ents);
+}
+
+function ldh_colname_field($fieldname) {
+  $fi = field_info_field($fieldname);
+  if (isset($fi['columns']) && $fi['columns']) {
+    // first column found ...
+    $col = reset(array_keys($fi['columns']));
+    return $col;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -233,7 +254,18 @@ class LdhEfr{
     // find the column name for us 'column name to be determined from metadata'
     if(empty($op))
       $op = "=";
+    if (empty($colname)) {
+      $colname = ldh_colname_field($fieldname);
+    }
     $this->efq->fieldCondition($fieldname, $colname , $val, $op);
+  }
+
+  public function propCoA($filter) {
+    $op = (isset($filter['op'])) ? $filter['op'] : NULL ;
+    $this->efq->propertyCondition($filter['column'], $filter['value'], $op );
+  }
+  public function propCo($column, $value, $operator = NULL) {
+    $this->efq->propertyCondition($column, $value, $operator );
   }
 
   public function getResult() {
@@ -281,5 +313,10 @@ class LdhEfr{
     } else {
       return false;
     }
+  }
+
+  public function getCount() {
+    $this->efq->count();
+    return $this->efq->execute();
   }
 }
