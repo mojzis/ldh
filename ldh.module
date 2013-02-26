@@ -266,6 +266,7 @@ class LdhEfr{
       $colname = ldh_colname_field($fieldname);
     }
     $this->efq->fieldCondition($fieldname, $colname , $val, $op);
+    return $this;
   }
 
   public function propCoA($filter) {
@@ -290,6 +291,11 @@ class LdhEfr{
     dpm($this->getResult(), $message);
   }
   
+  public function debug() {
+    dpm($this->efq);
+    return $this;
+  }
+  
   public function getAllIDs() {
     $result = $this->getResult();
     if ($result) {
@@ -306,8 +312,20 @@ class LdhEfr{
     } else {
       return false;
     }
-
   }
+  
+  public function getWrappers() {
+    $ents = $this->getEntities();
+    if ($ents) {
+      foreach($ents as $ent) {
+        $out[] = entity_metadata_wrapper($this->type, $ent);
+      }
+      return $out;
+    } else {
+      return false;
+    }
+  }
+  
 
   public function getOneID() {
     $ids = $this->getAllIDs();
