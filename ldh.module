@@ -242,6 +242,7 @@ class LdhEfr{
   var $result;
   public $type; // should be protected ?
   public $bundle;
+  protected $noBundleTypes = array('user');
 
   function __construct($bundle,$type = null) {
     $this->efq = new EntityFieldQuery();
@@ -251,8 +252,10 @@ class LdhEfr{
     }
     $this->type = $type;
     $this->bundle = $bundle;
-    $this->efq->entityCondition('entity_type', $this->type)
-    ->entityCondition('bundle', $this->bundle);
+    $this->efq->entityCondition('entity_type', $this->type);
+    if(! in_array($this->type, $this->noBundleTypes)) {
+      $this->efq->entityCondition('bundle', $this->bundle);
+    }
   }
 
   public function fieldCo($fieldname, $val, $op = null, $colname = null) {
@@ -282,8 +285,9 @@ class LdhEfr{
     }
   }
   
-  public function dpm() {
-    dpm($this->getResult());
+  public function dpm($message = null) {
+    // TODO: add some generic text in case message is null
+    dpm($this->getResult(), $message);
   }
   
   public function getAllIDs() {
