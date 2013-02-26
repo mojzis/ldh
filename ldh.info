@@ -1,3 +1,4 @@
 name = Lazy Developers Helper 
 description = all the functions that help acheive it
 core = 7.x
+files[] = 'includes/LdhEfr.inc'
