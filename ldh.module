@@ -115,6 +115,11 @@ function ldh_efq($bundle, $entityType = 'node'){
   return $query;
 }
 
+function ldh_efr($bundle, $type = null) {
+  $efr = new LdhEfr($bundle, $type);
+  return $efr;
+}
+
 /**
  * PropertyInfo
  * @todo
@@ -276,7 +281,11 @@ class LdhEfr{
       return false;
     }
   }
-
+  
+  public function dpm() {
+    dpm($this->getResult());
+  }
+  
   public function getAllIDs() {
     $result = $this->getResult();
     if ($result) {
