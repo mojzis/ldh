@@ -38,6 +38,10 @@ class LdhEfr{
     }
   }
 
+  public function addTag($tag) {
+    return $this->efq->addTag($tag);
+  }
+
   public function fieldCo($fieldname, $val, $op = null, $colname = null) {
     // find the column name for us 'column name to be determined from metadata'
     if(empty($op))
@@ -65,17 +69,17 @@ class LdhEfr{
       return false;
     }
   }
-  
+
   public function dpm($message = null) {
     // TODO: add some generic text in case message is null
     dpm($this->getResult(), $message);
   }
-  
+
   public function debug() {
     dpm($this->efq);
     return $this;
   }
-  
+
   public function getAllIDs() {
     $result = $this->getResult();
     if ($result) {
@@ -93,7 +97,7 @@ class LdhEfr{
       return false;
     }
   }
-  
+
   public function getWrappers() {
     $ents = $this->getEntities();
     if ($ents) {
@@ -105,7 +109,7 @@ class LdhEfr{
       return false;
     }
   }
-  
+
 
   public function getOneID() {
     $ids = $this->getAllIDs();
