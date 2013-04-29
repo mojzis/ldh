@@ -33,7 +33,7 @@ class LdhEfr{
     $this->type = $type;
     $this->bundle = $bundle;
     $this->efq->entityCondition('entity_type', $this->type);
-    if(! in_array($this->type, $this->noBundleTypes)) {
+    if(! in_array($this->type, $this->noBundleTypes) && $this->bundle != 'no_bundle_cond') {
       $this->efq->entityCondition('bundle', $this->bundle);
     }
   }
