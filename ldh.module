@@ -211,6 +211,14 @@ function ldh_create($bundle, $entityType = 'node') {
   return $ew;
 }
 
+function ldh_createe($bundle, $entityType = null) {
+  $entityType = $entityType == null ? $bundle : $entityType;
+  $ent = entity_create($entityType, array('type' => $bundle));
+  //$ew = entity_metadata_wrapper($entityType, $ent);
+  return $ent;
+}
+
+
 function ldh_mach_to_tid($mach, $voc, $field ) {
   // find automagically the field ?
   // cache the resulst ? or even the whole list ?
