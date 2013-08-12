@@ -134,5 +134,9 @@ class LdhEfr{
     $this->efq->count();
     return $this->efq->execute();
   }
+
+  public function limitCount($count) {
+    $this->efq->range(NULL,$count);
+  }
 }
 
