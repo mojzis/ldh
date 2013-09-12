@@ -130,6 +130,17 @@ class LdhEfr{
     }
   }
 
+  public function getOneEnt() {
+    $id = $this->getOneID();
+    if ($id) {
+      return ldh_load_one($this->type, $id);
+    } else {
+      return false;
+    }
+  }
+
+
+
   public function getCount() {
     $this->efq->count();
     return $this->efq->execute();

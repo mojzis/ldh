@@ -167,14 +167,14 @@ function ldh_taxo_addp($term, $vocname, $parent) {
  * @param string $vocname
  *   the machine name of the vocabulary
  */
-function ldh_taxo_add($term, $vocname, $parentid = 0) {
+function ldh_taxo_add($word, $vocname, $parentid = 0) {
   // find vid
   $voc = taxonomy_vocabulary_machine_name_load($vocname);
   // create array
   // return tid
   $t = array(
     'vid' => $voc->vid,
-    'name' => $term,
+    'name' => $word,
   );
   if ($parentid) {
     $t['parent'] = $parentid;
