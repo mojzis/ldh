@@ -247,3 +247,21 @@ function ldh_colname_field($fieldname) {
     return false;
   }
 }
+
+
+function ldh_create_type($name) {
+  $type = new EntityType();
+  $type->name = $name;
+  $type->label = $name;
+  $bundle = new Bundle();
+  $bundle->entity_type = $name;
+  $bundle->name = $name;
+  $bundle->label = $name;
+  $bundle->save();
+
+  $type->addProperty('uid', 'Author', 'integer', 'author');
+  $type->addProperty('created', 'Created', 'integer', 'created');
+  $type->addProperty('changed', 'Changed', 'integer', 'changed');
+
+  return $type;
+}
