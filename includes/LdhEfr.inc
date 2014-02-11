@@ -3,7 +3,17 @@
  * @file
  * Lazy developers helper -LdhEfr Class. Reduces typing when using the EFQ.
  */
- /**
+
+class LdhEfrt extends LdhEfr {
+  function __construct($type){
+    $this->efq = new EntityFieldQuery();
+    $this->type = $type;
+    $this->efq->entityCondition('entity_type', $this->type);
+  }
+}
+
+
+/**
  * $akce = 19;
  * $r = ldh_efq('ucast','ucast')->fieldCondition('field_uc_akce', 'target_id', $akce)
  *   ->execute();

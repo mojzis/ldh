@@ -78,6 +78,12 @@ function ldh_efr($bundle, $type = null) {
 }
 
 
+function ldh_tefr($type) {
+  $efr = new LdhEfrt($type);
+  return $efr;
+}
+
+
 /**
  * Create an EntityFieldQuery.
  *
