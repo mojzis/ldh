@@ -8,11 +8,11 @@
  * Implements hook_menu().
  */
 function ldh_menu() {
-  // TODO: make it more secure ... token ?
+
   $items['fields_json'] = array(
     'title' => 'Fields json',
     'page callback' => 'ldh_fields_json',
-    'access callback' => true,
+    'access arguments' => array('ldh fields'),
     'type' => MENU_CALLBACK,
     'file' => 'ldh.json.inc'
   );
@@ -20,7 +20,18 @@ function ldh_menu() {
 }
 
 /**
- * * Implements hook_form_ID_alter() for devel_execute_form().
+ * Implements hook_permission().
+ */
+function ldh_permission() {
+
+  $items['ldh fields'] = array(
+    'title' => t('Access fields json'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form_ID_alter() for devel_execute_form().
  */
 function ldh_form_devel_execute_form_alter(&$form, &$form_alter) {
 
