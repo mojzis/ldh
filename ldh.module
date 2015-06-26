@@ -47,6 +47,10 @@ function ldh_form_devel_execute_form_alter(&$form, &$form_alter) {
   // todo : add javascript to enter the clicked function into the textarea
   // try to load this somehow automagically ?
   $functions = array(
+    'ldh_ew' => array(
+      'call' => 'ldh_ew($id, $entityType);',
+      'title' => 'Entity Wrapper',
+    ),
     'ldh_pi' => array(
       'call' => 'ldh_pi($bundle, $entityType = "node");',
       'title' => 'Property information',
