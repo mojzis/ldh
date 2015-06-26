@@ -205,7 +205,7 @@ function ldh_taxo_add($word, $vocname, $parentid = 0) {
  * node wrapper
  *
  * @param integer $id
- * nid of the node to load
+ *  nid of the node to load
  *
  * @return EntityMetadataWrapper
  * http://drupalcontrib.org/api/drupal/contributions%21entity%21includes%21entity.wrapper.inc/class/EntityMetadataWrapper/7
@@ -215,8 +215,21 @@ function ldh_nw($id) {
   return entity_metadata_wrapper('node',$node);
 }
 
+/**
+ * entity wrapper
+ *
+ * @param integer $id
+ *  id of the entity to load
+ *
+ * @param string $type
+ *  type of the entity to load
+ *
+ * @return EntityMetadataWrapper
+ * http://drupalcontrib.org/api/drupal/contributions%21entity%21includes%21entity.wrapper.inc/class/EntityMetadataWrapper/7
+ */
 function ldh_ew($id, $type) {
-  $e = end(entity_load($type, array($id)));
+  $a = entity_load($type, array($id));
+  $e = end($a);
   return entity_metadata_wrapper($type,$e);
 }
 
@@ -245,7 +258,8 @@ function ldh_mach_to_tid($mach, $voc, $field ) {
   $r = $q->fieldCondition($field, 'value', $mach)
     ->execute();
   if (isset($r[$type])) {
-    return(end(array_keys($r[$type])));
+    $keys = array_keys($r[$type]);
+    return(end($keys));
   }
 }
 
